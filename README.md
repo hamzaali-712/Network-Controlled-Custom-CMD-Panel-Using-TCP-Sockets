@@ -334,7 +334,6 @@ Feel free to fork, modify, and distribute.
 🌐 **Connect with me:**
 - [LinkedIn](https://www.linkedin.com/in/hamza-ali-893a4a353)
 - [GitHub](https://github.com/hamzaali-712)
-- Email: hamzaali712@gmail.com
 
 ---
 
