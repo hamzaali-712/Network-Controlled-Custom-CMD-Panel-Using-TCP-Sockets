@@ -5,7 +5,6 @@ SERVER_HOST = "10.120.12.12"   # change if needed
 SERVER_PORT = 50001
 PROMPT = "mycmd> "
 
-# ---------------- Network Helpers ----------------
 def send_msg(sock, obj):
     data = json.dumps(obj).encode("utf-8")
     sock.sendall(struct.pack("!I", len(data)) + data)
@@ -20,7 +19,6 @@ def recv_msg(sock):
         data += sock.recv(length - len(data))
     return json.loads(data.decode("utf-8"))
 
-# ---------------- GUI ----------------
 class CmdWindow(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -28,7 +26,7 @@ class CmdWindow(tk.Tk):
         self.geometry("800x450")
         self.configure(bg="black")
 
-        # OUTPUT
+  
         self.output = ScrolledText(
             self,
             bg="black",
@@ -38,7 +36,7 @@ class CmdWindow(tk.Tk):
         )
         self.output.pack(fill=tk.BOTH, expand=True)
 
-        # BOTTOM BAR
+ 
         bottom = tk.Frame(self, bg="black")
         bottom.pack(fill=tk.X)
 
@@ -62,7 +60,6 @@ class CmdWindow(tk.Tk):
         self.entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self.entry.bind("<Return>", self.on_enter)
 
-        # STATUS
         self.status = tk.Label(
             self,
             text="Disconnected",
@@ -73,13 +70,11 @@ class CmdWindow(tk.Tk):
         )
         self.status.pack(fill=tk.X, side=tk.BOTTOM)
 
-        # SOCKET
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.after(100, lambda: self.entry.focus_force())
         threading.Thread(target=self.connect, daemon=True).start()
 
-    # ---------------- CONNECTION ----------------
     def connect(self):
         try:
             self.sock.connect((SERVER_HOST, SERVER_PORT))
@@ -89,14 +84,12 @@ class CmdWindow(tk.Tk):
         except Exception as e:
             self.write(f"Connection failed: {e}")
 
-    # ---------------- OUTPUT ----------------
     def write(self, text):
         self.output.configure(state="normal")
         self.output.insert(tk.END, text + "\n")
         self.output.see(tk.END)
         self.output.configure(state="disabled")
 
-    # ---------------- SEND COMMAND ----------------
     def on_enter(self, event=None):
         text = self.entry_var.get().strip()
         if not text:
@@ -116,7 +109,6 @@ class CmdWindow(tk.Tk):
         self.entry_var.set("")
         self.entry.focus_force()
 
-    # ---------------- RECEIVE ----------------
     def receive_loop(self):
         while True:
             resp = recv_msg(self.sock)
@@ -133,7 +125,5 @@ class CmdWindow(tk.Tk):
                     self.write(line)
             else:
                 self.write(output)
-
-# ---------------- RUN ----------------
 if __name__ == "__main__":
     CmdWindow().mainloop()
